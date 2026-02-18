@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { GitHubRepo } from '../types';
 
-const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME || 'anilkumarravuri';
+const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME || 'ursravuri';
 
 export function useGitHubRepos() {
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
