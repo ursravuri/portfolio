@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { blogApi } from '../hooks/useApi';
 import { BlogPost } from '../types';
 import BlogCard from '../components/BlogCard';
+
+const CATEGORIES = ['All', 'API Management', 'Security', 'Middleware', 'Enterprise Architecture', 'Observability'];
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
     document.title = 'Blog | Anil Kumar Ravuri';
@@ -19,6 +22,11 @@ export default function BlogPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const filtered = useMemo(() => {
+    if (activeCategory === 'All') return posts;
+    return posts.filter(p => p.category === activeCategory);
+  }, [posts, activeCategory]);
+
   return (
     <div style={{ paddingTop: '5rem' }}>
       <section style={{
@@ -26,22 +34,75 @@ export default function BlogPage() {
         borderTop: '1px solid var(--border)',
       }}>
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-          <div style={{ marginBottom: '3rem' }}>
-            <span style={{ color: 'var(--accent)', fontSize: '0.7rem', letterSpacing: '0.2em' }}>
-              <span style={{ color: 'var(--green)' }}>// </span>04. blog
-            </span>
+          <div style={{ marginBottom: '2rem' }}>
+            <div style={{
+              fontSize: '0.62rem', letterSpacing: '0.3em', textTransform: 'uppercase',
+              color: 'var(--accent)', marginBottom: '1rem',
+              display: 'flex', alignItems: 'center', gap: '1rem',
+            }}>
+              Blog
+              <span style={{ flex: 1, height: 1, background: 'var(--border)', maxWidth: '5rem' }} />
+            </div>
             <h2 style={{
               fontFamily: 'var(--serif)',
               fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
               fontWeight: 700,
-              marginTop: '0.5rem',
+              marginBottom: '0.5rem',
             }}>
               Articles & <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>Insights</em>
             </h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.78rem', marginTop: '1rem', fontFamily: 'var(--mono)', maxWidth: '500px', lineHeight: 1.8 }}>
-              Technical writing on API management, middleware, and enterprise architecture.
+            <p style={{ color: 'var(--muted)', fontSize: '0.78rem', marginTop: '1rem', fontFamily: 'var(--mono)', maxWidth: '560px', lineHeight: 1.8 }}>
+              Technical writing on API management, middleware, security, and enterprise architecture. Practical insights for architects and senior engineers.
             </p>
           </div>
+
+          {/* Category filter */}
+          {posts.length > 0 && (
+            <div style={{
+              display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '2rem',
+              paddingBottom: '1.5rem', borderBottom: '1px solid var(--border)',
+            }}>
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  style={{
+                    background: activeCategory === cat ? 'var(--accent)' : 'transparent',
+                    color: activeCategory === cat ? 'var(--bg)' : 'var(--muted)',
+                    border: `1px solid ${activeCategory === cat ? 'var(--accent)' : 'var(--border)'}`,
+                    padding: '0.35rem 0.8rem',
+                    fontSize: '0.65rem',
+                    fontFamily: 'var(--mono)',
+                    cursor: 'pointer',
+                    borderRadius: '2px',
+                    transition: 'all 0.2s',
+                    letterSpacing: '0.05em',
+                  }}
+                  onMouseEnter={e => {
+                    if (activeCategory !== cat) {
+                      e.currentTarget.style.borderColor = 'var(--accent)';
+                      e.currentTarget.style.color = 'var(--accent)';
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (activeCategory !== cat) {
+                      e.currentTarget.style.borderColor = 'var(--border)';
+                      e.currentTarget.style.color = 'var(--muted)';
+                    }
+                  }}
+                >
+                  {cat}
+                  {cat !== 'All' && (
+                    <span style={{
+                      marginLeft: '0.4rem', opacity: 0.6, fontSize: '0.58rem',
+                    }}>
+                      ({posts.filter(p => p.category === cat).length})
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
 
           {loading && (
             <div style={{ color: 'var(--muted)', fontSize: '0.75rem', fontFamily: 'var(--mono)', padding: '2rem 0' }}>
@@ -56,29 +117,37 @@ export default function BlogPage() {
             </div>
           )}
 
-          {!loading && !error && posts.length === 0 && (
+          {!loading && !error && filtered.length === 0 && (
             <div style={{
               color: 'var(--muted)', fontSize: '0.78rem', fontFamily: 'var(--mono)',
               padding: '3rem 2rem', textAlign: 'center',
               border: '1px solid var(--border)', background: 'var(--surface)',
             }}>
-              <div style={{ marginBottom: '0.5rem' }}>No posts yet.</div>
-              <span style={{ color: 'var(--green)' }}>$</span> echo "Coming soon..."
+              No articles in this category yet.
             </div>
           )}
 
-          {posts.length > 0 && (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
-              gap: '1px',
-              background: 'var(--border)',
-              border: '1px solid var(--border)',
-            }}>
-              {posts.map(post => (
-                <BlogCard key={post.slug} post={post} />
-              ))}
-            </div>
+          {filtered.length > 0 && (
+            <>
+              <div style={{
+                fontSize: '0.65rem', color: 'var(--muted)', fontFamily: 'var(--mono)',
+                marginBottom: '1rem',
+              }}>
+                {filtered.length} article{filtered.length !== 1 ? 's' : ''}
+                {activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
+              </div>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+                gap: '1px',
+                background: 'var(--border)',
+                border: '1px solid var(--border)',
+              }}>
+                {filtered.map(post => (
+                  <BlogCard key={post.slug} post={post} />
+                ))}
+              </div>
+            </>
           )}
         </div>
       </section>

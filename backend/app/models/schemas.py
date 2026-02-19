@@ -57,6 +57,7 @@ class BlogPost(BaseModel):
     title: str
     excerpt: str
     content: str
+    category: str
     date: str
     tags: List[str]
     read_time: int

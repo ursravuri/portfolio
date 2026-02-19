@@ -21,8 +21,12 @@ export default function BlogCard({ post }: BlogCardProps) {
       onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.background = 'var(--bg)')}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-        <span style={{ fontSize: '0.62rem', color: 'var(--muted)', letterSpacing: '0.1em' }}>
-          {post.date}
+        <span style={{
+          fontSize: '0.55rem', letterSpacing: '0.1em', textTransform: 'uppercase',
+          color: 'var(--bg)', background: 'var(--accent)',
+          padding: '0.15rem 0.5rem', borderRadius: '2px', fontWeight: 600,
+        }}>
+          {post.category}
         </span>
         <span style={{ fontSize: '0.6rem', color: 'var(--accent2)' }}>
           {post.read_time} min read
@@ -38,21 +42,11 @@ export default function BlogCard({ post }: BlogCardProps) {
       </p>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-          {post.tags.map(tag => (
-            <span key={tag} style={{
-              fontSize: '0.58rem',
-              padding: '0.15rem 0.4rem',
-              background: 'rgba(88,166,255,0.1)',
-              color: 'var(--accent)',
-              borderRadius: '3px',
-            }}>
-              {tag}
-            </span>
-          ))}
-        </div>
+        <span style={{ fontSize: '0.6rem', color: 'var(--muted)', letterSpacing: '0.1em' }}>
+          {post.date}
+        </span>
         <span style={{ color: 'var(--accent)', fontSize: '0.65rem' }}>
-          ./read_more &rarr;
+          Read article &rarr;
         </span>
       </div>
     </Link>
