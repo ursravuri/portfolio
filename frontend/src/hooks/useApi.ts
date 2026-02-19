@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Profile, ContactForm, ContactResponse, SkillsGrouped, Certification, BlogPost } from '../types';
+import { BLOG_POSTS } from '../data/blogPosts';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -35,8 +36,11 @@ export const certificationsApi = {
 
 export const blogApi = {
   getPosts: (): Promise<BlogPost[]> =>
-    api.get<BlogPost[]>('/api/blog/').then(r => r.data),
+    Promise.resolve(BLOG_POSTS.map(p => ({ ...p, content: '' }))),
 
-  getPost: (slug: string): Promise<BlogPost> =>
-    api.get<BlogPost>(`/api/blog/${slug}`).then(r => r.data),
+  getPost: (slug: string): Promise<BlogPost> => {
+    const post = BLOG_POSTS.find(p => p.slug === slug);
+    if (post) return Promise.resolve(post);
+    return Promise.reject(new Error('Post not found'));
+  },
 };
