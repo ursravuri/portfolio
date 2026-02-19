@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&display=swap');
 
 :root {
-  --bg: #080c10;
-  --surface: #0e1318;
-  --surface2: #161b22;
-  --border: #1a2030;
-  --text: #dce8f0;
-  --muted: #4a6070;
-  --accent: #4fb8d4;
-  --accent2: #f0a04a;
-  --green: #3fb950;
-  --purple: #bc8cff;
-  --red: #ff7b72;
-  --yellow: #d29922;
+  --bg: #111419;
+  --surface: #181c23;
+  --surface2: #1f242d;
+  --border: #2a3040;
+  --text: #e0e4ec;
+  --muted: #6b7a8d;
+  --accent: #5cc2d8;
+  --accent2: #f0a858;
+  --green: #4ec96b;
+  --purple: #c49aff;
+  --red: #ff8b82;
+  --yellow: #daa740;
   --mono: 'DM Mono', monospace;
   --serif: 'Playfair Display', serif;
 }
